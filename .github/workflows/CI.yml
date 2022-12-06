@@ -48,3 +48,5 @@ jobs:
       run: pio run -e brooklynroom
     - name: Build ledstrip
       run: pio run -e ledstrip
+    - name: Build panlee
+      run: pio run -e panlee
