@@ -431,7 +431,7 @@ public:
             // If we make it to this point, it should be success, so we consume 
 
             ResetReadBuffer();
-            delay(1);
+            delay(10);
 
             if (bSendResponsePacket)
             {

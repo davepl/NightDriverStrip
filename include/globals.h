@@ -165,8 +165,8 @@
 //
 // Idle tasks in taskmgr run at IDLE_PRIORITY+1 so you want to be at least +2 
 
-#define DRAWING_PRIORITY        tskIDLE_PRIORITY+6
-#define SOCKET_PRIORITY         tskIDLE_PRIORITY+7
+#define DRAWING_PRIORITY        tskIDLE_PRIORITY+7
+#define SOCKET_PRIORITY         tskIDLE_PRIORITY+6
 #define AUDIOSERIAL_PRIORITY    tskIDLE_PRIORITY+5      // If equal or lower than audio, will produce garbage on serial
 #define NET_PRIORITY            tskIDLE_PRIORITY+4
 #define AUDIO_PRIORITY          tskIDLE_PRIORITY+3
