@@ -1291,6 +1291,9 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 
         #define USE_TFTSPI 1                                  // Use TFT_eSPI
 
+    #elif USE_TOUCH480
+
+        #define USE_ST7701
     #else                                                     // unsupported board defined in platformio
         #error Unknown Display! Check platformio.ini board definition.
     #endif

@@ -190,6 +190,7 @@ Note: Some defines are board specific, this is noted below.
 | USE_OLED          | Enable stats display on built in OLED               | Heltec Wifi Kit 32           |
 | USE_LCD           | Enable stats display on external ILI9341 LCD        | Wrover32                     |
 | USE_TFTSPI        | Enable stats display on external TTGO LCD           | esp32dev                     |
+| USE_TOUCH480      | Enable stats display on the built in TFT 4-inch     | Makerfabs ESP32-S3 480 4.0   |
 | ENABLE_AUDIO      | Listen for audio from the microphone and process it | M5Stick-C and M5Stick-C Plus |
 | ENABLE_REMOTE     | IR Remote Control                                   | Requires IR Hardware         |
 

@@ -574,6 +574,17 @@ void setup()
     debugI("Initializing OLED display");
 #endif
 
+#if USE_TOUCH480
+    debugI("Initializing TOUCH480");
+
+    //pinMode(TFT_BL, OUTPUT);
+    //digitalWrite(TFT_BL, 128);
+
+    g_pDisplay->begin();
+    g_pDisplay->setRotation(3);
+    g_pDisplay->fillScreen(GREEN16);
+#endif
+
 #if USE_TFTSPI
     debugI("Initializing TFTSPI");
     extern std::unique_ptr<TFT_eSPI> g_pDisplay;

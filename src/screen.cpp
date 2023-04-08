@@ -54,6 +54,66 @@ M5Display *g_pDisplay;
 std::unique_ptr<TFT_eSPI> g_pDisplay = std::make_unique<TFT_eSPI>();
 #endif
 
+#if USE_TOUCH480
+    #include <SPI.h>
+    #include <FS.h>
+    #include <Wire.h>
+    #include <SD.h>
+    #include <Arduino_GFX_Library.h>
+    #include <Adafruit_MLX90640.h>
+    #include <Adafruit_SGP30.h>
+    #include <Adafruit_SHT31.h>
+    #include <ESPAsyncWebServer.h>
+
+    // SD
+    #define SD_SCK 12
+    #define SD_MISO 13
+    #define SD_MOSI 11
+    #define SD_CS 10
+
+    // I2S
+    #define I2S_DOUT 19
+    #define I2S_BCLK 20
+    #define I2S_LRCK 46
+
+    // Touch
+    #define I2C_SDA_PIN 17
+    #define I2C_SCL_PIN 18
+    #define TOUCH_INT -1
+    #define TOUCH_RST 38
+
+    #define TOUCH_ROTATION ROTATION_NORMAL
+    #define TOUCH_MAP_X1 480
+    #define TOUCH_MAP_X2 0
+    #define TOUCH_MAP_Y1 480
+    #define TOUCH_MAP_Y2 0
+
+    #define B_NUM_MAIN 4
+    #define B_COUNTY_NUM 8
+
+    #define SSID "Makerfabs"
+    #define PWD "20160704"
+
+    // MLX90640
+    #define MLX_I2C_ADDR 0x33
+
+    Arduino_DataBus * bus = new Arduino_SWSPI(
+        GFX_NOT_DEFINED /* DC */, 1 /* CS */,
+        12 /* SCK */, 11 /* MOSI */, GFX_NOT_DEFINED /* MISO */);
+
+    Arduino_ESP32RGBPanel *rgbpanel = new Arduino_ESP32RGBPanel(
+        45 /* DE */, 4 /* VSYNC */, 5 /* HSYNC */, 21 /* PCLK */,
+        39 /* R0 */, 40 /* R1 */, 41 /* R2 */, 42 /* R3 */, 2 /* R4 */,
+        0 /* G0 */, 9 /* G1 */, 14 /* G2 */, 47 /* G3 */, 48 /* G4 */, 3 /* G5 */,
+        6 /* B0 */, 7 /* B1 */, 15 /* B2 */, 16 /* B3 */, 8 /* B4 */,
+        1 /* hsync_polarity */, 10 /* hsync_front_porch */, 8 /* hsync_pulse_width */, 50 /* hsync_back_porch */,
+        1 /* vsync_polarity */, 10 /* vsync_front_porch */, 8 /* vsync_pulse_width */, 20 /* vsync_back_porch */);
+
+    std::unique_ptr<Arduino_RGB_Display> g_pDisplay(new Arduino_RGB_Display(
+        480 /* width */, 480 /* height */, rgbpanel, 0 /* rotation */, true /* auto_flush */,
+        bus, GFX_NOT_DEFINED /* RST */, st7701_type1_init_operations, sizeof(st7701_type1_init_operations)));
+#endif
+
 //
 // Externals - Mostly things that the screen will report or display for us
 //

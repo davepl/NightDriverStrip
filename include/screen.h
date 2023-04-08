@@ -43,7 +43,7 @@
     extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C * g_pDisplay;
 #endif
 
-#if USE_LCD
+#if USE_LCD 
     extern Adafruit_ILI9341 * g_pDisplay;
     #include <fonts/FreeMono18pt7b.h>
     #include <fonts/FreeMono12pt7b.h>
@@ -60,6 +60,20 @@
     extern std::unique_ptr<TFT_eSPI> g_pDisplay;
 #endif
 
+#if USE_TOUCH480
+    #include <TAMC_GT911.h>
+    #include <Arduino_GFX_Library.h>
+    #include <Adafruit_MLX90640.h>
+    #include <Adafruit_SGP30.h>
+    #include <Adafruit_SHT31.h>
+    #include <fonts/FreeMono18pt7b.h>
+    #include <fonts/FreeMono12pt7b.h>
+    #include <fonts/FreeMono9pt7b.h>
+
+    extern Arduino_DataBus * bus;
+    extern Arduino_ESP32RGBPanel * rgbpanel;
+    extern std::unique_ptr<Arduino_RGB_Display> g_pDisplay;
+#endif
 class Screen
 {
   public:
@@ -75,9 +89,6 @@ class Screen
     static const int TopMargin = 28;  
     static const int BottomMargin = 12;
 #endif
-
-
-    
 
     static inline uint16_t to16bit(const CRGB rgb) // Convert CRGB -> 16 bit 5:6:5
     {
@@ -97,14 +108,14 @@ class Screen
         g_pDisplay->setCursor(0, 10);
         g_pDisplay->println(strStatus);
         g_pDisplay->sendBuffer();
-    #elif USE_TFTSPI || USE_M5DISPLAY
+    #elif USE_TFTSPI || USE_M5DISPLAY 
         g_pDisplay->fillScreen(TFT_BLACK);
         g_pDisplay->setFreeFont(FF15);
         g_pDisplay->setTextColor(0xFBE0);
         auto xh = 10;
         auto yh = 0; 
         g_pDisplay->drawString(strStatus, xh, yh);
-    #elif USE_LCD
+    #elif USE_LCD || USE_TOUCH480
         g_pDisplay->fillScreen(BLUE16);
         g_pDisplay->setFont(FM9);
         g_pDisplay->setTextColor(WHITE16);
@@ -128,14 +139,14 @@ class Screen
 
     static uint16_t fontHeight()
     {
-        #if USE_LCD
+        #if USE_LCD || USE_TOUCH480
             int16_t x1, y1;
             uint16_t w, h;
             g_pDisplay->getTextBounds("M", 0, 0, &x1, &y1, &w, &h);         // Beats me how to do this, so I'm taking the height of M as a line height
             return w + 2;                                                   // One pixel above and below chars looks better
         #elif USE_OLED 
             return g_pDisplay->getFontAscent() + 1;
-        #elif USE_TFTSPI || USE_M5DISPLAY
+        #elif USE_TFTSPI || USE_M5DISPLAY 
             return g_pDisplay->fontHeight();
         #elif USE_SCREEN
             return g_pDisplay->getFontAscent();
@@ -148,9 +159,9 @@ class Screen
     {
         #if USE_OLED
             return g_pDisplay->getStrWidth(str.c_str());
-        #elif USE_TFTSPI || USE_M5DISPLAY            
+        #elif USE_TFTSPI || USE_M5DISPLAY 
             return g_pDisplay->textWidth(str);            
-        #elif USE_LCD
+        #elif USE_LCD || USE_TOUCH480
             int16_t x1, y1;
             uint16_t w, h;
             g_pDisplay->getTextBounds(str, 0, 0, &x1, &y1, &w, &h);
@@ -241,7 +252,7 @@ class Screen
             }
         #endif
 
-        #if USE_LCD
+        #if USE_LCD || USE_TOUCH480 
             switch(size)
             {
                 case BIG:
@@ -299,7 +310,7 @@ class Screen
 
     static void drawString(const String & strText, uint16_t y)
     {
-        #if USE_M5DISPLAY || USE_TFTSPI || USE_OLED
+        #if USE_M5DISPLAY || USE_TFTSPI || USE_OLED || USE_TOUCH480
         setCursor(screenWidth() / 2 - textWidth(strText) / 2, y);
         println(strText.c_str());
         #endif
@@ -309,7 +320,7 @@ class Screen
     {
         #if USE_OLED
             g_pDisplay->drawBox(x, y, w, h);
-        #elif USE_M5DISPLAY || USE_TFTSPI 
+        #elif USE_M5DISPLAY || USE_TFTSPI || USE_TOUCH480
             g_pDisplay->drawRect(x, y, w, h, color);
         #elif USE_SCREEN
             g_pDisplay->drawFrame(x, y, w, h);
@@ -318,7 +329,7 @@ class Screen
 
     static void fillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
     {
-        #if USE_M5DISPLAY || USE_TFTSPI
+        #if USE_M5DISPLAY || USE_TFTSPI || USE_TOUCH480
             g_pDisplay->fillRect(x, y, w, h, color);
         #elif USE_SCREEN || USE_OLED
             g_pDisplay->drawBox(x, y, w, h);

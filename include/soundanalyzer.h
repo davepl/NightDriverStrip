@@ -401,7 +401,7 @@ class SoundAnalyzer : public AudioVariables
         }
         size_t bytesRead = 0;
 
-#if M5STICKC || M5STICKCPLUS || M5STACKCORE2
+#if M5STICKC || M5STICKCPLUS || M5STACKCORE2 || USE_TOUCH480
         i2s_read(I2S_NUM_0, (void *)sampleBuffer, sizeof(sampleBuffer), &bytesRead, (100 / portTICK_RATE_MS));
 #else
         ESP_ERROR_CHECK(i2s_adc_enable(EXAMPLE_I2S_NUM));
@@ -669,7 +669,7 @@ public:
         err += i2s_set_pin(Speak_I2S_NUMBER, &tx_pin_config);  // Set the I2S pin number.
         err += i2s_set_clk(Speak_I2S_NUMBER, SAMPLING_FREQUENCY, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);  // Set the clock and bitwidth used by I2S Rx and Tx.
 
-    #elif M5STICKC || M5STICKCPLUS 
+    #elif M5STICKC || M5STICKCPLUS || USE_TOUCH480
 
         i2s_config_t i2s_config =
         {
@@ -695,7 +695,7 @@ public:
         i2s_set_pin(I2S_NUM_0, &pin_config);
         i2s_set_clk(I2S_NUM_0, SAMPLING_FREQUENCY, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
 
-#elif TTGO || MESMERIZER || SPECTRUM_WROVER_KIT
+#elif TTGO || MESMERIZER || SPECTRUM_WROVER_KIT  
 
         i2s_config_t i2s_config;
         i2s_config.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_ADC_BUILT_IN);
