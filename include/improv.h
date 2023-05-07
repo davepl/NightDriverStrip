@@ -50,12 +50,12 @@
 namespace improv
 {
 
-    static const char *const SERVICE_UUID      = "00467768-6228-2272-4663-277478268000";
-    static const char *const STATUS_UUID       = "00467768-6228-2272-4663-277478268001";
-    static const char *const ERROR_UUID        = "00467768-6228-2272-4663-277478268002";
-    static const char *const RPC_COMMAND_UUID  = "00467768-6228-2272-4663-277478268003";
-    static const char *const RPC_RESULT_UUID   = "00467768-6228-2272-4663-277478268004";
-    static const char *const CAPABILITIES_UUID = "00467768-6228-2272-4663-277478268005";
+    static const String SERVICE_UUID      = "00467768-6228-2272-4663-277478268000";
+    static const String STATUS_UUID       = "00467768-6228-2272-4663-277478268001";
+    static const String ERROR_UUID        = "00467768-6228-2272-4663-277478268002";
+    static const String RPC_COMMAND_UUID  = "00467768-6228-2272-4663-277478268003";
+    static const String RPC_RESULT_UUID   = "00467768-6228-2272-4663-277478268004";
+    static const String CAPABILITIES_UUID = "00467768-6228-2272-4663-277478268005";
 
     enum Error : uint8_t
     {

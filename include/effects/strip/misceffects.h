@@ -257,7 +257,7 @@ protected:
 // 
 // Displays the NightDriver logo on the screen
 
-static const char * pszLogoFile = "/bmp/LowResLogo.jpg";
+static const String pszLogoFile = "/bmp/LowResLogo.jpg";
 
 class SplashLogoEffect : public LEDStripEffect
 {

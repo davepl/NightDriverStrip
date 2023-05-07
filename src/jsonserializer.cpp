@@ -31,7 +31,7 @@
 #include "SPIFFS.h"
 #include "jsonserializer.h"
 
-bool LoadJSONFile(const char *fileName, size_t& bufferSize, std::unique_ptr<DynamicJsonDocument>& pJsonDoc)
+bool LoadJSONFile(const String & fileName, size_t& bufferSize, std::unique_ptr<DynamicJsonDocument>& pJsonDoc)
 {
     bool jsonReadSuccessful = false;
 
@@ -80,7 +80,7 @@ bool LoadJSONFile(const char *fileName, size_t& bufferSize, std::unique_ptr<Dyna
     return jsonReadSuccessful;
 }
 
-bool SaveToJSONFile(const char *fileName, size_t& bufferSize, IJSONSerializable& object)
+bool SaveToJSONFile(const String & fileName, size_t& bufferSize, IJSONSerializable& object)
 {
     if (bufferSize == 0)
         bufferSize = JSON_BUFFER_BASE_SIZE;
@@ -139,7 +139,7 @@ bool SaveToJSONFile(const char *fileName, size_t& bufferSize, IJSONSerializable&
     return true;
 }
 
-bool RemoveJSONFile(const char *fileName)
+bool RemoveJSONFile(const String & fileName)
 {
     return SPIFFS.remove(fileName);
 }

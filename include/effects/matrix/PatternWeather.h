@@ -49,9 +49,9 @@
 
 #define WEATHER_INTERVAL_SECONDS (10*60)
 
-static const char * pszDaysOfWeek[] = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
+static const String pszDaysOfWeek[] = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
 
-static const char * pszWeatherIcons[] = {   "",                                 // 00 Unused
+static const String pszWeatherIcons[] = {   "",                                 // 00 Unused
                                             "/bmp/clearsky.jpg",                // 01
                                             "/bmp/fewclouds.jpg",               // 02
                                             "/bmp/scatteredclouds.jpg",         // 03
@@ -365,14 +365,14 @@ public:
         if (iconToday >= 0)
         {
             auto filename = pszWeatherIcons[iconToday];
-            if (strlen(filename))
+            if (!filename.isEmpty())
                 if (JDR_OK != TJpgDec.drawFsJpg(0, 10, filename))        // Draw the image
                     debugW("Could not display %s", filename);
         }    
         if (iconTomorrow >= 0)
         {
             auto filename = pszWeatherIcons[iconTomorrow];
-            if (strlen(filename))
+            if (!filename.isEmpty())
                 if (JDR_OK != TJpgDec.drawFsJpg(xHalf+1, 10, filename))        // Draw the image
                     debugW("Could not display %s", filename);
         }    
@@ -413,8 +413,8 @@ public:
 
         time_t today = time(nullptr);
         tm * todayTime = localtime(&today);
-        const char * pszToday = pszDaysOfWeek[todayTime->tm_wday];
-        const char * pszTomorrow = pszDaysOfWeek[ (todayTime->tm_wday + 1) % 7 ];
+        const String pszToday = pszDaysOfWeek[todayTime->tm_wday];
+        const String pszTomorrow = pszDaysOfWeek[ (todayTime->tm_wday + 1) % 7 ];
 
         // Draw the day of the week and tomorrow's day as well
 

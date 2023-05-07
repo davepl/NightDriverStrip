@@ -71,7 +71,8 @@ bool DeviceConfig::SetTimeZone(const String& newTimeZone, bool skipWrite)
 {
     String quotedTZ = "\n\"" + newTimeZone + '"';
     
-    const char *start = strstr(timezones_start, quotedTZ.c_str());
+    
+    const char * start = strstr(timezones_start, quotedTZ.c_str());
 
     // If we can't find the new timezone as a timezone name, assume it's a literal value
     if (start == NULL) 

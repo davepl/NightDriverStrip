@@ -207,7 +207,7 @@ class SpectrumAnalyzerEffect : public LEDStripEffect, virtual public VUMeterEffe
         return 60;
     }
 
-    virtual bool RequiresDoubleBuffering() const
+    virtual bool RequiresDoubleBuffering() const override
     {
         return _fadeRate != 0;
     }
@@ -278,35 +278,34 @@ class SpectrumAnalyzerEffect : public LEDStripEffect, virtual public VUMeterEffe
         int yOffset   = pGFXChannel->height() - value;
         int yOffset2  = pGFXChannel->height() - value2;
 
-        if (_fadeRate == 0)
-            for (int y = 1; y < yOffset2; y++)
-                for (int x = xOffset; x < xOffset + barWidth; x++)
-                    g()->setPixel(x, y, CRGB::Black);
-        
         for (int y = yOffset2; y < pGFXChannel->height(); y++)
             for (int x = xOffset; x < xOffset + barWidth; x++)
                 g()->setPixel(x, y, baseColor);
-        
-        const int PeakFadeTime_ms = 1000;
-
-        CRGB colorHighlight = CRGB(CRGB::White);
-        unsigned long msPeakAge = millis() - g_Analyzer.g_lastPeak1Time[iBand];
-        if (msPeakAge > PeakFadeTime_ms)
-            msPeakAge = PeakFadeTime_ms;
-        
-        float agePercent = (float) msPeakAge / (float) MS_PER_SECOND;
-        uint8_t fadeAmount = std::min(255.0f, agePercent * 256);
-
-        colorHighlight = CRGB(CRGB::White).fadeToBlackBy(fadeAmount);
-
-        if (value == 0)
-            colorHighlight = baseColor;
 
         // if decay rate is less than zero we interpret that here to mean "don't draw it at all".  
-
+       
         if (_peak1DecayRate >= 0.0f)
+        {
+            const int PeakFadeTime_ms = 1000;
+            CRGB colorHighlight;
+            unsigned long msPeakAge = millis() - g_Analyzer.g_lastPeak1Time[iBand];
+
+            if (msPeakAge > PeakFadeTime_ms)
+                msPeakAge = PeakFadeTime_ms;
+            float agePercent = (float) msPeakAge / (float) MS_PER_SECOND;
+            uint8_t fadeAmount = std::min(255.0f, agePercent * 256);
+
+            if (value == 0)
+                colorHighlight = baseColor;
+            else if (_peak1DecayRate == _peak2DecayRate)                        // If they track together, we don't fade out the highlight bar
+                colorHighlight = CRGB::White;
+            else
+                colorHighlight = CRGB(CRGB::White).fadeToBlackBy(fadeAmount);
+
             pGFXChannel->drawLine(xOffset, max(0, yOffset-1), xOffset + barWidth - 1, max(0, yOffset-1), colorHighlight);
+        }
     }
+
 
   public:
 
@@ -359,7 +358,7 @@ class SpectrumAnalyzerEffect : public LEDStripEffect, virtual public VUMeterEffe
     {
     }
 
-    virtual bool SerializeToJSON(JsonObject& jsonObject) 
+    virtual bool SerializeToJSON(JsonObject& jsonObject) override
     {
         StaticJsonDocument<512> jsonDoc;
         
@@ -395,6 +394,9 @@ class SpectrumAnalyzerEffect : public LEDStripEffect, virtual public VUMeterEffe
 
         if (_fadeRate)
             fadeAllChannelsToBlackBy(_fadeRate);
+
+        if (_fadeRate == 0)
+            g()->Clear();
 
         for (int i = 0; i < _numBars; i++)
         {

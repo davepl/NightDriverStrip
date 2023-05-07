@@ -102,7 +102,7 @@ class DeviceConfig : public IJSONSerializable
         SetIfPresentIn(jsonObject, use24HourClock, NAME_OF(use24HourClock));
         SetIfPresentIn(jsonObject, useCelsius, NAME_OF(useCelsius));
 
-        const char *tag = NAME_OF(timeZone);
+        const String tag = NAME_OF(timeZone);
         if (jsonObject.containsKey(tag)) 
             return SetTimeZone(jsonObject[tag], true);
    
