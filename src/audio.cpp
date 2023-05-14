@@ -39,7 +39,6 @@ SoundAnalyzer g_Analyzer;                    // Dummy stub class in non-audio ca
 
 #include <esp_task_wdt.h>
 
-
 extern NightDriverTaskManager g_TaskManager;
 extern DRAM_ATTR uint32_t g_FPS;          // Our global framerate
 extern uint32_t g_Watts; 
@@ -56,8 +55,7 @@ double PeakData::_allBandsMax = 1.0;
 
 void IRAM_ATTR AudioSamplerTaskEntry(void *)
 {
-
-    // debugI(">>> Sampler Task Started");
+    debugI(">> Sampler Task Started");
 
     g_Analyzer.SampleBufferInitI2S();
 

@@ -101,6 +101,10 @@ void MatrixPreDraw()
 
         if (g_ptrEffectManager->GetCurrentEffect()->ShouldShowTitle() && pMatrix->GetCaptionTransparency() > 0.00)
         {
+            const size_t kCharWidth = 6;
+            const size_t kCharHeight = 10;
+            int y = MATRIX_HEIGHT - 2 - kCharHeight;
+
             LEDMatrixGFX::titleLayer.setFont(font3x5);
             uint8_t brite = (uint8_t)(pMatrix->GetCaptionTransparency() * 255.0);
             LEDMatrixGFX::titleLayer.setBrightness(brite); // 255 would obscure it entirely
@@ -111,16 +115,12 @@ void MatrixPreDraw()
             rgb24 titleColor = rgb24(255, 255, 255);
 
             LEDMatrixGFX::titleLayer.setChromaKeyColor(chromaKeyColor);
-            LEDMatrixGFX::titleLayer.enableChromaKey(true);
+            LEDMatrixGFX::titleLayer.enableChromaKey(true, y, y + kCharHeight + 2);                 // Plus two for the shadow on each edge
             LEDMatrixGFX::titleLayer.setFont(font6x10);
             LEDMatrixGFX::titleLayer.fillScreen(chromaKeyColor);
 
-            const size_t kCharWidth = 6;
-            const size_t kCharHeight = 10;
-
             const auto caption = pMatrix->GetCaption();
 
-            int y = MATRIX_HEIGHT - 2 - kCharHeight;
             int w = caption.length() * kCharWidth;
             int x = (MATRIX_WIDTH / 2) - (w / 2) + 1;
 

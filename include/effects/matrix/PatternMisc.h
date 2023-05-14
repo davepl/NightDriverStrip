@@ -124,7 +124,7 @@ class PatternRose : public LEDStripEffect
       g()->DimAll(dim);
 
 
-      for (uint8_t i = 0; i < 32; i++)
+      for (uint8_t i = 0; i < MATRIX_HEIGHT; i++)
       {
         CRGB color;
 
@@ -132,14 +132,14 @@ class PatternRose : public LEDStripEffect
         uint8_t y = 0;
 
         if (i < 16) {
-          x = g()->beatcos8((i + 1) * 2, i, MATRIX_HEIGHT - i) + 16;
-          y = beatsin8((i + 1) * 2, i, MATRIX_HEIGHT - i);
+          x = g()->beatcos8((i + 1) * 3, i, MATRIX_HEIGHT - i) + 16;
+          y = beatsin8((i + 1) * 3, i, MATRIX_HEIGHT - i);
           color = g()->ColorFromCurrentPalette(i * 14);
         }
         else
         {
-          x = beatsin8((32 - i) * 2, MATRIX_WIDTH - i, i + 1) + 16;
-          y = g()->beatcos8((32 - i) * 2, MATRIX_WIDTH - i, i + 1);
+          x = beatsin8((32 - i) * 3, MATRIX_WIDTH - i, i + 1) + 16;
+          y = g()->beatcos8((32 - i) * 3, MATRIX_WIDTH - i, i + 1);
           color = g()->ColorFromCurrentPalette((31 - i) * 14);
         }
 

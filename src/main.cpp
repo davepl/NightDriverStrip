@@ -245,7 +245,7 @@ extern DRAM_ATTR std::unique_ptr<LEDBufferManager> g_aptrBufferManager[NUM_CHANN
 #if ENABLE_WIFI
 void IRAM_ATTR DebugLoopTaskEntry(void *)
 {
-    //debugI(">> DebugLoopTaskEntry\n");
+    debugI(">> DebugLoopTaskEntry\n");
 
    // Initialize RemoteDebug
 
@@ -281,7 +281,7 @@ void IRAM_ATTR DebugLoopTaskEntry(void *)
 
 void IRAM_ATTR NetworkHandlingLoopEntry(void *)
 {
-    //debugI(">> NetworkHandlingLoopEntry\n");
+    debugI(">> NetworkHandlingLoopEntry\n");
 
 #if ENABLE_WIFI
     if(!MDNS.begin("esp32")) {

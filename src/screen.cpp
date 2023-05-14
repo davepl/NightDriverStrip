@@ -418,7 +418,7 @@ extern Bounce2::Button Button2;
 
 void IRAM_ATTR ScreenUpdateLoopEntry(void *)
 {
-    //debugI(">> ScreenUpdateLoopEntry\n");
+    debugI(">> ScreenUpdateLoopEntry\n");
 
 #if USE_OLED
     g_pDisplay->setDisplayRotation(SCREEN_ROTATION);
