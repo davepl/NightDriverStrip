@@ -1598,12 +1598,17 @@ class AppTime
         return (double)tv.tv_sec + (tv.tv_usec/(double)MICROS_PER_SECOND);
     }
 
+    double FrameElapsedTime() const
+    {
+        return FrameStartTime() - CurrentTime();
+    }
+
     static double TimeFromTimeval(const timeval & tv)
     {
         return tv.tv_sec + (tv.tv_usec/(double)MICROS_PER_SECOND);
     }
 
-    static timeval TimevalFromTime(double t)
+    static timeval TimevalFromTime(double t) 
     {
         timeval tv;
         tv.tv_sec = (long)t;
