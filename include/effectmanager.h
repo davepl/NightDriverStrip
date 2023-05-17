@@ -487,11 +487,11 @@ public:
         }
         _iCurrentEffect = i;
         _effectStartTime = millis();
+
         StartEffect();
 
         if (!skipSave)
             SaveEffectManagerConfig();
-
     }
 
     uint GetTimeUsedByCurrentEffect() const
