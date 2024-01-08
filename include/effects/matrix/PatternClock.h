@@ -89,57 +89,43 @@ class PatternClock : public LEDStripEffect
         g()->Clear();
         g()->DrawSafeCircle(MATRIX_WIDTH/2, MATRIX_HEIGHT/2, 1, CRGB::Blue);
 
-        // Draw the hour ticks around the outside of the clock every 30 degrees
+        // Convert hour, minute, and second to angles
+        uint8_t hourAngle = (hours % 12) * 21; // (360 / 12) / 1.41 = 21
+        uint8_t minuteAngle = minutes * 4; // (360 / 60) / 1.41 = 4
+        uint8_t secondAngle = seconds * 4;
 
-        for (int z = 0; z < 360; z = z + 30)
-        {
-            // Begin at 0° and stop before 360°
-            float angle = z;
-            angle = (angle / 57.29577951); // Convert degrees to radians
-            int x2 = (MATRIX_CENTER_X + round((sin(angle) * (radius - 4))));         // Extra 0.5 helps rounding land more evenly
-            int y2 = (MATRIX_CENTER_Y - round(cos(angle) * (radius - 4)));
-            int x3 = (MATRIX_CENTER_X + round((sin(angle) * (radius - 1))));
-            int y3 = (MATRIX_CENTER_Y - round(cos(angle) * (radius - 1)));
-            g()->drawLine(x2, y2, x3, y3, CRGB::Red);
-        }
+        // Calculate hand positions
+        int hourX = MATRIX_CENTER_X + ((radius-3) * 3 * (cos8(hourAngle) - 128) / 512);
+        int hourY = MATRIX_CENTER_Y + ((radius-3) * 3 * (sin8_C(hourAngle) - 128) / 512);
+        
+        int minuteX = MATRIX_CENTER_X + (radius * (cos8(minuteAngle) - 128) / 128);
+        int minuteY = MATRIX_CENTER_Y + (radius * (sin8(minuteAngle) - 128) / 128);
+        
+        int secondX = MATRIX_CENTER_X + (radius * (cos8(secondAngle) - 128) / 128);
+        int secondY = MATRIX_CENTER_Y + (radius * (sin8(secondAngle) - 128) / 128);
+
+        // Draw the hands
+        g()->drawLine(MATRIX_CENTER_X, MATRIX_CENTER_Y, hourX, hourY, CRGB::Yellow);   // Hour hand
+        g()->drawLine(MATRIX_CENTER_X, MATRIX_CENTER_Y, minuteX, minuteY, CRGB::Yellow); // Minute hand
+        g()->drawLine(MATRIX_CENTER_X, MATRIX_CENTER_Y, secondX, secondY, CRGB::White); // Second hand
 
         g()->DrawSafeCircle(MATRIX_WIDTH/2, MATRIX_HEIGHT/2, radius, CRGB::Blue);
         g()->DrawSafeCircle(MATRIX_WIDTH/2, MATRIX_HEIGHT/2, radius+1, CRGB::Green);
 
-        // Draw the second hand
+        for (int z = 0; z < 12*21; z += 21) 
+        {   // 21 approximates 30 degrees in 0-255 system
+            // Convert the angle from 0-255 range to 0-360 degrees approximation
+            uint8_t angle = z;
 
-        float angle = seconds * 6;
-        angle = (angle / 57.29577951); // Convert degrees to radians
-        int x3 = (MATRIX_CENTER_X + round(sin(angle) * (radius - 2)));
-        int y3 = (MATRIX_CENTER_Y - round(cos(angle) * (radius - 2)));
-        g()->drawLine(MATRIX_CENTER_X, MATRIX_CENTER_Y, x3, y3, CRGB::White);
+            // Calculate the start and end points of the tick marks
+            int x2 = (MATRIX_CENTER_X + ((radius - 4) * (sin8_C(angle) - 128) / 128));
+            int y2 = (MATRIX_CENTER_Y - ((radius - 4) * (cos8(angle) - 128) / 128));
+            int x3 = (MATRIX_CENTER_X + ((radius - 1) * (sin8_C(angle) - 128) / 128));
+            int y3 = (MATRIX_CENTER_Y - ((radius - 1) * (cos8(angle) - 128) / 128));
 
-        // Draw the minute hand
-
-        angle = minutes * 6;
-        angle = (angle / 57.29577951); // Convert degrees to radians
-        x3 = (MATRIX_CENTER_X + round(sin(angle) * (radius - 3)));
-        y3 = (MATRIX_CENTER_Y - round(cos(angle) * (radius - 3)));
-        g()->drawLine(MATRIX_CENTER_X, MATRIX_CENTER_Y, x3, y3, CRGB::Yellow);
-
-        // Draw the  hour hand
-
-        angle = hours * 30 + int((minutes / 12) * 6);
-        angle = (angle / 57.29577951); // Convert degrees to radians
-        x3 = (MATRIX_CENTER_X + round(sin(angle) * (radius / 2 )));
-        y3 = (MATRIX_CENTER_Y - round(cos(angle) * (radius / 2 )));
-        g()->drawLine(MATRIX_CENTER_X, MATRIX_CENTER_Y, x3, y3, CRGB::Yellow);
-
-        // Draw the sixtieths pixel
-
-        angle = sixtieths * 6;
-        angle = (angle / 57.29577951); // Convert degrees to radians
-        int x2 = (MATRIX_CENTER_X + round((sin(angle) * (radius - 1))));         // Extra 0.5 helps rounding land more evenly
-        int y2 = (MATRIX_CENTER_Y - round(cos(angle) * (radius - 1)));
-        x3 = (MATRIX_CENTER_X + round((sin(angle) * (radius))));
-        y3 = (MATRIX_CENTER_Y - round(cos(angle) * (radius)));
-        g()->drawLine(x2, y2, x3, y3, CRGB::White);
-
+            // Draw the tick mark
+            g()->drawLine(x2, y2, x3, y3, CRGB::Red);
+        }
     }
 };
 
