@@ -78,70 +78,66 @@ void LEDMatrixGFX::PrepareFrame()
 
     static_assert(sizeof(CRGB) == sizeof(SM_RGB), "Code assumes 24 bits in both places");
 
-    EVERY_N_MILLIS(MILLIS_PER_FRAME)
+    #if SHOW_FPS_ON_MATRIX
+        backgroundLayer.setFont(gohufont11);
+        // 3 is half char width at curret font size, 5 is half the height.
+        string output = "FPS: " + std::to_string(g_Values.FPS);
+        backgroundLayer.drawString(MATRIX_WIDTH / 2 - (3 * output.length()), MATRIX_HEIGHT / 2 - 5, rgb24(255, 255, 255), rgb24(0, 0, 0), output.c_str());
+    #endif
+
+    auto graphics = g_ptrSystem->EffectManager().g();
+
+    matrix.setCalcRefreshRateDivider(MATRIX_CALC_DIVIDER);
+    matrix.setRefreshRate(MATRIX_REFRESH_RATE);
+
+    auto pMatrix = std::static_pointer_cast<LEDMatrixGFX>(g_ptrSystem->EffectManager().GetBaseGraphics()[0]);
+    pMatrix->setLeds(GetMatrixBackBuffer());
+
+    // We set ourselves to the lower of the fader value or the brightness value,
+    // so that we can fade between effects without having to change the brightness
+    // setting.
+
+    if (g_ptrSystem->EffectManager().GetCurrentEffect().ShouldShowTitle() && pMatrix->GetCaptionTransparency() > 0.00)
     {
+        titleLayer.setFont(font3x5);
+        uint8_t brite = (uint8_t)(pMatrix->GetCaptionTransparency() * 255.0);
+        debugV("Caption: %d", brite);
 
-        #if SHOW_FPS_ON_MATRIX
-            backgroundLayer.setFont(gohufont11);
-            // 3 is half char width at curret font size, 5 is half the height.
-            string output = "FPS: " + std::to_string(g_Values.FPS);
-            backgroundLayer.drawString(MATRIX_WIDTH / 2 - (3 * output.length()), MATRIX_HEIGHT / 2 - 5, rgb24(255, 255, 255), rgb24(0, 0, 0), output.c_str());
-        #endif
+        rgb24 chromaKeyColor = rgb24(255, 0, 255);
+        rgb24 shadowColor = rgb24(0, 0, 0);
+        rgb24 titleColor = rgb24(255, 255, 255);
 
-        auto graphics = g_ptrSystem->EffectManager().g();
+        titleLayer.setChromaKeyColor(chromaKeyColor);
+        titleLayer.setFont(font6x10);
+        titleLayer.fillScreen(chromaKeyColor);
 
-        matrix.setCalcRefreshRateDivider(MATRIX_CALC_DIVIDER);
-        matrix.setRefreshRate(MATRIX_REFRESH_RATE);
+        const size_t kCharWidth = 6;
+        const size_t kCharHeight = 10;
 
-        auto pMatrix = std::static_pointer_cast<LEDMatrixGFX>(g_ptrSystem->EffectManager().GetBaseGraphics()[0]);
-        pMatrix->setLeds(GetMatrixBackBuffer());
+        const auto caption = pMatrix->GetCaption();
 
-        // We set ourselves to the lower of the fader value or the brightness value,
-        // so that we can fade between effects without having to change the brightness
-        // setting.
+        int y = MATRIX_HEIGHT - 2 - kCharHeight;
+        int w = caption.length() * kCharWidth;
+        int x = (MATRIX_WIDTH / 2) - (w / 2) + 1;
 
-        if (g_ptrSystem->EffectManager().GetCurrentEffect().ShouldShowTitle() && pMatrix->GetCaptionTransparency() > 0.00)
-        {
-            titleLayer.setFont(font3x5);
-            uint8_t brite = (uint8_t)(pMatrix->GetCaptionTransparency() * 255.0);
-            debugV("Caption: %d", brite);
+        auto szCaption = caption.c_str();
+        titleLayer.drawString(x - 1, y, shadowColor, szCaption);
+        titleLayer.drawString(x + 1, y, shadowColor, szCaption);
+        titleLayer.drawString(x, y - 1, shadowColor, szCaption);
+        titleLayer.drawString(x, y + 1, shadowColor, szCaption);
+        titleLayer.drawString(x, y, titleColor, szCaption);
 
-            rgb24 chromaKeyColor = rgb24(255, 0, 255);
-            rgb24 shadowColor = rgb24(0, 0, 0);
-            rgb24 titleColor = rgb24(255, 255, 255);
+        // We enable the chromakey overlay just for the strip of screen where it appears.  This support is only
+        // present in the private fork of SmartMatrix that is linked to the mesermizer project.
 
-            titleLayer.setChromaKeyColor(chromaKeyColor);
-            titleLayer.setFont(font6x10);
-            titleLayer.fillScreen(chromaKeyColor);
-
-            const size_t kCharWidth = 6;
-            const size_t kCharHeight = 10;
-
-            const auto caption = pMatrix->GetCaption();
-
-            int y = MATRIX_HEIGHT - 2 - kCharHeight;
-            int w = caption.length() * kCharWidth;
-            int x = (MATRIX_WIDTH / 2) - (w / 2) + 1;
-
-            auto szCaption = caption.c_str();
-            titleLayer.drawString(x - 1, y, shadowColor, szCaption);
-            titleLayer.drawString(x + 1, y, shadowColor, szCaption);
-            titleLayer.drawString(x, y - 1, shadowColor, szCaption);
-            titleLayer.drawString(x, y + 1, shadowColor, szCaption);
-            titleLayer.drawString(x, y, titleColor, szCaption);
-
-            // We enable the chromakey overlay just for the strip of screen where it appears.  This support is only
-            // present in the private fork of SmartMatrix that is linked to the mesermizer project.
-
-            titleLayer.swapBuffers(false);
-            titleLayer.enableChromaKey(true, y, y + kCharHeight);
-            titleLayer.setBrightness(brite); // 255 would obscure it entirely
-        }
-        else
-        {
-            titleLayer.enableChromaKey(false);
-            titleLayer.setBrightness(0);
-        }
+        titleLayer.swapBuffers(false);
+        titleLayer.enableChromaKey(true, y, y + kCharHeight);
+        titleLayer.setBrightness(brite); // 255 would obscure it entirely
+    }
+    else
+    {
+        titleLayer.enableChromaKey(false);
+        titleLayer.setBrightness(0);
     }
 }
 

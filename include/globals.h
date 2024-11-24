@@ -556,7 +556,6 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #define EFFECT_PERSISTENCE_CRITICAL 1   // Require effects serialization to succeed
 
     #define DEFAULT_EFFECT_INTERVAL     (MILLIS_PER_SECOND * 60 * 2)
-    #define MILLIS_PER_FRAME            0
 
     #define NUM_CHANNELS                1
     #define RING_SIZE_0                 24
@@ -772,7 +771,7 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 
     #define TOGGLE_BUTTON_1         39
     #define TOGGLE_BUTTON_2         37
-
+    #define PIN_LAMP_POWER          33              // Sense the vehicle lamp state (headlights on/off) and adjust brightness accordingly
     #define LED_PIN0                32
 
     #define DEFAULT_EFFECT_INTERVAL 0               // No scheduled effect changes
@@ -1289,16 +1288,19 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
     #endif
 #endif
 
+// ENABLE_OTA enables the Over the Air flash updates and the code to handle them.  It doesn't make
+// any sense without WiFi, so defaults to whatever the WiFi setting is if not specified..
+
 #ifndef ENABLE_OTA
-#define ENABLE_OTA              1   // Listen for over the air update to the flash
+#define ENABLE_OTA              ENABLE_WIFI   
 #endif
 
 #ifndef ENABLE_ESPNOW
-#define ENABLE_ESPNOW           0   // Listen for ESPNOW packets
+#define ENABLE_ESPNOW           0   // Do not listen for ESPNOW packets by default
 #endif
 
 #ifndef ENABLE_NTP
-#define ENABLE_NTP              1   // Update the clock from NTP
+#define ENABLE_NTP              ENABLE_WIFI   // Update the clock from NTP
 #endif
 
 #ifndef NUM_LEDS
@@ -1397,10 +1399,6 @@ extern RemoteDebug Debug;           // Let everyone in the project know about it
 
 #ifndef DEFAULT_EFFECT_INTERVAL
 #define DEFAULT_EFFECT_INTERVAL 1000*30
-#endif
-
-#ifndef MILLIS_PER_FRAME
-#define MILLIS_PER_FRAME 0
 #endif
 
 #ifndef LED_FAN_OFFSET_BU

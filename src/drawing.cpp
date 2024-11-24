@@ -153,8 +153,6 @@ int CalcDelayUntilNextFrame(double frameStartTime, uint16_t localPixelsDrawn, ui
 
     // Delay enough to slow down to the desired framerate
 
-#if MILLIS_PER_FRAME == 0
-
     if (localPixelsDrawn > 0)
     {
         const double minimumFrameTime = 1.0 / g_ptrSystem->EffectManager().GetCurrentEffect().DesiredFramesPerSecond();
@@ -189,7 +187,6 @@ int CalcDelayUntilNextFrame(double frameStartTime, uint16_t localPixelsDrawn, ui
     }
 
     return g_Values.FreeDrawTime * MILLIS_PER_SECOND;
-#endif
 }
 
 // ShowOnboardLED
