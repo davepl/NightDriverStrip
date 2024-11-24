@@ -616,6 +616,25 @@ void loop()
             debugI("%s", strOutput.c_str());
         }
 
+        // If the lamps are on, we set the brightness to 16.  This allows an input pin to act as a brightness attenuator
+
+        #ifdef PIN_LAMP_POWER
+            static auto oldBrightness = g_ptrSystem->DeviceConfig().GetBrightness();
+            static bool bLampsOn = false;
+
+            if (!bLampsOn && digitalRead(PIN_LAMP_POWER) == HIGH)
+            {
+                oldBrightness = g_ptrSystem->DeviceConfig().GetBrightness();
+                g_ptrSystem->DeviceConfig().SetBrightness(16);
+                bLampsOn = true;
+            }
+            else if (bLampsOn && digitalRead(PIN_LAMP_POWER) == LOW)
+            {
+                g_ptrSystem->DeviceConfig().SetBrightness(oldBrightness);
+                bLampsOn = false;
+            }
+        #endif
+
         // Once an update is underway, we loop tightly on ArduinoOTA.handle.  Otherwise, we delay a bit to share the CPU.
 
         if (!g_Values.UpdateStarted)

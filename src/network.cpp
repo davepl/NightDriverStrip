@@ -59,6 +59,7 @@ enum class ESPNowCommand : uint8_t
     ESPNOW_NEXTEFFECT = 1,
     ESPNOW_PREVEFFECT,
     ESPNOW_SETEFFECT,
+    ESPNOW_SETBRIGHTNESS,
     ESPNOW_INVALID = 255    // Followed by a uint32_t argument
 };
 
@@ -125,6 +126,11 @@ void onReceiveESPNOW(const uint8_t *macAddr, const uint8_t *data, int dataLen)
         case ESPNowCommand::ESPNOW_SETEFFECT:
             debugI("ESPNOW Setting effect index to %d", message.arg1);
             g_ptrSystem->EffectManager().SetCurrentEffectIndex(message.arg1);
+            break;
+
+        case ESPNowCommand::ESPNOW_SETBRIGHTNESS:
+            debugI("ESPNOW Setting brightness to %d", message.arg1);
+            g_ptrSystem->DeviceConfig().SetBrightness(message.arg1);
             break;
 
         default:
